@@ -8,12 +8,9 @@ The AWS infrastructure code is semi-automated as bash scripts in `bin`.  Ideally
 
 ### Requirements
 
-The `aws` cli must be installed and configured, you must have a key-pair called `scenron`. The `scenron` .pem file should exist in `~/.ssh/scenron.pem` with permissions 600.
+ - The `aws` cli must be installed and configured (with region us-east-1 & format json). 
+ - You must have a key-pair called `scenron`. 
+ - The `scenron` .pem file should exist in `~/.ssh/scenron.pem` with permissions 600.
+ - Please ensure `jq` is installed: Mac `brew install jq`, Linux (debian based) `sudo apt-get install -y jq`.
 
-Please ensure
 
-```
-export AWS_DEFAULT_OUTPUT="json"
-```
-
-Please ensure `jq` is installed, Mac `brew install jq`, Linux (debian based): `sudo apt-get install -y jq`.

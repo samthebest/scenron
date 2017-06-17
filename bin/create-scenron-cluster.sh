@@ -4,11 +4,13 @@ set -ex
 
 num_nodes=2
 
+source ./bin/utils.sh
+
 aws emr create-cluster \
   --name "Scenron" \
   --release-label emr-5.6.0 \
   --applications Name=Spark \
-  --region eu-west-1 \
+  --region ${region} \
   --use-default-roles \
   --ec2-attributes KeyName=scenron \
   --instance-type m3.xlarge \

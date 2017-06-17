@@ -1,5 +1,5 @@
 #/bin/bash
 
-id=`./bin/scenron-cluster-id.sh`
+source ./bin/utils.sh
 
-aws emr terminate-clusters --cluster-ids ${id}
+aws emr terminate-clusters --cluster-ids `scenron_cluster_id`

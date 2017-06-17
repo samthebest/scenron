@@ -1,27 +1,80 @@
 #/bin/bash
 
 region=us-east-1
+availability_zone=us-east-1b
+enron_snapshot_id=snap-d203feb5
+key_pair=scenron
 
 function cluster_status {
 	aws emr list-clusters | jq -r '.Clusters[] | [.Id, .Name, .Status.State] | @tsv'
 }
 
-function scenron_clusters {
-	cluster_status | grep Scenron | cut -f1,3 | grep WAITING | cut -f1
+function scenron_cluster_status {
+	cluster_status | grep Scenron | grep -v TERMINATED
 }
 
-function scenron_cluster_id {
-	num_scenron_clusters=`scenron_clusters | wc -l | awk {'print $1'}`
+function check_only_one_cluster {
+	num_scenron_clusters=`scenron_cluster_status | wc -l | awk {'print $1'}`
 
-	if [ "${num_scenron_clusters}" == "1" ]; then
-		scenron_clusters
-	else
-		# TODO should handle all non-terminated states
-		echo "ERROR: We assume exactly a single cluster with state WAITING called Scenron exists"
+	if [ "${num_scenron_clusters}" != "1" ]; then
+		echo "ERROR: We assume exactly a single cluster with non terminated state called Scenron exists"
 		exit 1
 	fi
 }
 
+function scenron_cluster_status_only {
+	check_only_one_cluster && scenron_cluster_status | cut -f 3
+}
+
+function scenron_cluster_id {
+	check_only_one_cluster && scenron_cluster_status | cut -f 1
+}
+
 function create_enron_volume {
-	aws ec2 create-volume --size 220 --snapshot-id snap-d203feb5 --region us-east-1 --availability-zone us-east-1a --volume-type gp2
+	aws ec2 create-volume --size 220 --snapshot-id ${enron_snapshot_id} --region us-east-1 --availability-zone us-east-1b --volume-type gp2
+}
+
+function delete_enron_volume {
+	# TODO
+	echo "ERROR: Not implemented"
+	exit 1
+}
+
+function enron_volume_id {
+	# TODO we just grab the first (in case many have been created), we ought to give an error like in scenron_cluster_id
+	aws ec2 describe-volumes | jq -r '.Volumes[] | [.VolumeId, .SnapshotId] | @tsv' | grep ${enron_snapshot_id} | cut -f1 | head -1
+}
+
+function master_instance_id {
+	aws ec2 describe-instances | jq -cr '.Reservations[] | .Instances[] | [.InstanceId, .Tags, .State.Name]' | grep MASTER | grep running | jq -r '.[0]'
+}
+
+function attach_volume_to_master {
+	aws ec2 attach-volume --volume-id `enron_volume_id` --instance-id `master_instance_id` --device /dev/sdf
+}
+
+function master_public_dns {
+	# TODO Should learn to use jq better to make this line shorter
+	aws ec2 describe-instances | jq -cr '.Reservations[] | .Instances[] | [.InstanceId, .Tags, .NetworkInterfaces]' | grep MASTER | jq -r '.[2]' | jq -r '.[] | .Association.PublicDnsName'
+}
+
+function master_security_group_id {
+	aws ec2 describe-security-groups | jq -cr '.SecurityGroups[] | [.GroupName, .GroupId] | @tsv' | grep "ElasticMapReduce-master" | cut -f2
+}
+
+function allow_inbound_ssh_this_ip {
+	ip=`curl ipecho.net/plain ; echo`
+	aws ec2 authorize-security-group-ingress --group-name ElasticMapReduce-master --protocol tcp --port 22 --cidr ${ip}/24
+}
+
+function ssh_to_master {
+	ssh -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`
+}
+
+function mount_ebs {
+	sudo mkdir /enron
+	# sudo mkfs.ext3 /dev/xvdf
+	sudo sh -c 'echo "/dev/xvdf   /enron  ext4      defaults, nofail     0     2" >> /etc/fstab'
+	sudo mount -a
+	df -h
 }

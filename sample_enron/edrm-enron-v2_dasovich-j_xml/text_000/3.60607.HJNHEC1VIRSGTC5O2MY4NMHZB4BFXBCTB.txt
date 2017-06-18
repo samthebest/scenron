@@ -1,0 +1,36 @@
+Date: Sat, 14 Apr 2001 14:00:00 -0700 (PDT)
+From: Jeff Dasovich
+To: JcjCal02@aol.com
+Cc: dwindham@uclink4.berkeley.edu, guinney@haas.berkeley.edu, JCJA@chevron.com, JcjCal02@aol.com, Jeff.Dasovich@enron.com, jjackson@haas.berkeley.edu, Mark_Guinney@watsonwyatt.com
+Subject: Re: Netscape
+X-SDOC: 536867
+X-ZLID: zl-edrm-enron-v2-dasovich-j-40229.eml
+
+Dudes:
+Here's my my comments to Mark's answers to the questions, and suggestions to 
+Jimmie's model.  I don't answer the bottom line question, since we have some 
+talking to do on the model.  
+
+Jimmie, your model is great except we have to value the company on cash flow 
+(as opposed to NI).  I've take a stab at setting up the discounted cash flow 
+model.  All my stuff is highlighted in yellow.  
+
+It's the capex that's screwy (see assumptions given in questions).  I get at 
+25% of 1995 revs, not 45.8% as indicated in the assumptions.  
+
+I also assume that when it sez working capital is net zero, we don't factor 
+those balance sheet line items into the DCF model.  Others agree?  
+
+Anyway, it gives me a $3.32 share value, so I think the model's got some 
+work.  Take a look and let me know what you think.
+
+Best,
+Jeff
+
+
+
+***********
+EDRM Enron Email Data Set has been produced in EML, PST and NSF format by ZL Technologies, Inc. This Data Set is licensed under a Creative Commons Attribution 3.0 United States License <http://creativecommons.org/licenses/by/3.0/us/> . To provide attribution, please cite to "ZL Technologies, Inc. (http://www.zlti.com)."
+***********
+Attachment: Netscape JD comments.doc type=application/msword
+Attachment: NETSCAPE JD Comments.XLW type=application/octet-stream

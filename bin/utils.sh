@@ -94,6 +94,7 @@ function scp_jar {
 }
 
 function unzipped_to_email_per_row_format {
+	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` "sudo rm -r /enron/email_per_row"
 	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` \
-	  "sudo spark-submit --class scenron.UnzippedToEmailPerRowDistinctApp --master yarn --deploy-mode client /home/hadoop/scenron.jar"
+	  "sudo spark-submit --class scenron.UnzippedToEmailPerRowDistinctApp --master yarn --deploy-mode client --driver-memory 10g --executor-memory 10g /home/hadoop/scenron.jar"
 }

@@ -68,13 +68,17 @@ function allow_inbound_ssh_this_ip {
 }
 
 function ssh_to_master {
-	ssh -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`
+	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`
 }
 
 function mount_ebs {
-	sudo mkdir /enron
-	# sudo mkfs.ext3 /dev/xvdf
-	sudo sh -c 'echo "/dev/xvdf   /enron  ext4      defaults, nofail     0     2" >> /etc/fstab'
-	sudo mount -a
-	df -h
+	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` "sudo mkdir /enron"
+	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` "sudo mount /dev/xvdf /enron"
+	echo "INFO: Mounted Enron EBS, contents:"
+	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` "ls -lha /enron"
+}
+
+function unzip_data {
+	scp -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem ./bin/unzip-v2-enron.sh hadoop@`master_public_dns`:/home/hadoop/
+	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` "sudo /home/hadoop/unzip-v2-enron.sh"
 }

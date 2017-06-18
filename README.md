@@ -15,4 +15,18 @@ Please run `source ./bin/utils.sh` to bring some handy functions into your shell
  - The `scenron` .pem file should exist in `~/.ssh/scenron.pem` with permissions 600.
  - Please ensure `jq` is installed: Mac `brew install jq`, Linux (debian based) `sudo apt-get install -y jq`.
 
+### Create EBS Volume Script
+
+`./bin/create-enron-volume.sh` will create an EBS with the enron data.
+
+### Create Cluster Script
+
+Requries `./bin/create-enron-volume.sh` to be run once first.
+
+This will create an EMR cluster with:
+
+ - spark
+ - automatically add a rules so your IP can ssh into master
+ - automatically attach and mount the EBS
+ - automatically unpacks the enron data (if it isn't already unpacked) onto the EBS
 

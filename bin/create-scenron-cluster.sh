@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 num_nodes=2
 
@@ -16,15 +16,15 @@ aws emr create-cluster \
   --instance-type m3.xlarge \
   --instance-count ${num_nodes}
 
-# TODO Sleep just to be sure the default security groups are created (should poll)
+# TODO (should poll) Sleep just to be sure the default security groups are created
 sleep 10
 
 allow_inbound_ssh_this_ip || echo "INFO: Security group rule already exists, this is fine."
 
-secs=120
+secs=600
 SECONDS=0
 
-while (( SECONDS < secs )); do    # Loop until interval has elapsed.
+while (( SECONDS < secs )); do
     status=`scenron_cluster_status_only`
     echo "INFO: Cluster status: $status"
     if [ "${status}" = "WAITING" ]; then
@@ -40,3 +40,14 @@ if [ "${status}" != "WAITING" ]; then
 fi
 
 attach_volume_to_master
+
+# TODO (should poll) Sleep until volume attached 
+sleep 10
+
+mount_ebs
+
+# TODO (should poll) Sleep until volume mounted
+sleep 10
+
+echo "INFO: Unzipping data this may take some time"
+unzip_data

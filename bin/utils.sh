@@ -86,8 +86,14 @@ function unzip_data {
 function grab_sample {
 	scp -r -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`:/enron/flat/edrm-enron-v2_buy-r_xml sample_enron/
 	scp -r -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`:/enron/flat/edrm-enron-v2_dasovich-j_xml sample_enron/
-	scp -r -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`:/enron/flat/eedrm-enron-v2_kaminski-v_xml sample_enron/
-	scp -r -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`:/enron/flat/eedrm-enron-v2_kaminski-v_xml_1of2 sample_enron/
-	scp -r -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`:/enron/flat/eedrm-enron-v2_kaminski-v_xml_2of2 sample_enron/
 }
 
+function scp_jar {
+	sbt assembly
+	scp -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem target/scala-2.11/scenron-assembly-1.jar hadoop@`master_public_dns`:/home/hadoop/scenron.jar
+}
+
+function unzipped_to_email_per_row_format {
+	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` \
+	  "sudo spark-submit --class scenron.UnzippedToEmailPerRowDistinctApp --master yarn --deploy-mode client /home/hadoop/scenron.jar"
+}

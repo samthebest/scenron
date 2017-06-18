@@ -39,6 +39,56 @@ object SampleEmails {
       |
     """.stripMargin.trim()
 
+  val withEmptyCc =
+    """
+      |Date: Wed, 2 May 2001 01:16:00 -0700 (PDT)
+      |From: Vince J Kaminski
+      |To: Shirley Crenshaw
+      |Cc:
+      |Subject: A friend of mine
+      |X-SDOC: 1004421
+      |X-ZLID: zl-edrm-enron-v2-kaminski-v-21551.eml
+      |
+      |Shirley,
+      |
+      |Please, arrange a phone interview with Richard.
+      |Stinson, myself, Vasant.
+      |
+      |Vince
+      |
+      |***********
+      |EDRM Enron Email Data Set has been produced in EML, PST and NSF format by ZL Technologies, Inc. This Data Set is licensed under a Creative Commons Attribution 3.0 United States License <http://creativecommons.org/licenses/by/3.0/us/> . To provide attribution, please cite to "ZL Technologies, Inc. (http://www.zlti.com)."
+      |***********
+      |Attachment: Richard Heo Resume.doc type=application/msword
+      |
+    """.stripMargin.trim()
+
+  val withThreeLineTo =
+    """
+      |Date: Wed, 2 May 2001 01:16:00 -0700 (PDT)
+      |From: Vince J Kaminski
+      |To: Karen Tamlyn, Dale Surbey, Steven Leppard, Melanie Doyle, Tani Nath, Vince
+      |   J Kaminski, Lucy Page, John
+      |   Smith
+      |Cc:
+      |Subject: A friend of mine
+      |X-SDOC: 1004421
+      |X-ZLID: zl-edrm-enron-v2-kaminski-v-21551.eml
+      |
+      |Shirley,
+      |
+      |Please, arrange a phone interview with Richard.
+      |Stinson, myself, Vasant.
+      |
+      |Vince
+      |
+      |***********
+      |EDRM Enron Email Data Set has been produced in EML, PST and NSF format by ZL Technologies, Inc. This Data Set is licensed under a Creative Commons Attribution 3.0 United States License <http://creativecommons.org/licenses/by/3.0/us/> . To provide attribution, please cite to "ZL Technologies, Inc. (http://www.zlti.com)."
+      |***********
+      |Attachment: Richard Heo Resume.doc type=application/msword
+      |
+    """.stripMargin.trim()
+
   val withReply =
     """
       |Date: Thu, 12 Oct 2000 02:24:00 -0700 (PDT)

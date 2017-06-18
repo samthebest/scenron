@@ -26,3 +26,30 @@ name := "scenron"
 parallelExecution in Test := false
 
 version := "1"
+
+// TODO Avro META-INF caused a deduplicate error, ought to add necessary exclude, but working that out will be a pain
+// so using this brute force "shut the hell up and just compile my code" approach
+mergeStrategy in assembly <<= (mergeStrategy in assembly)((old) => {
+  case x if Assembly.isConfigFile(x) =>
+    MergeStrategy.concat
+  case PathList(ps@_*) if Assembly.isReadme(ps.last) || Assembly.isLicenseFile(ps.last) =>
+    MergeStrategy.rename
+  case PathList("META-INF", xs@_*) =>
+    (xs map {
+      _.toLowerCase
+    }) match {
+      case ("manifest.mf" :: Nil) | ("index.list" :: Nil) | ("dependencies" :: Nil) =>
+        MergeStrategy.discard
+      case ps@(x :: xs) if ps.last.endsWith(".sf") || ps.last.endsWith(".dsa") =>
+        MergeStrategy.discard
+      case "plexus" :: xs =>
+        MergeStrategy.discard
+      case "services" :: xs =>
+        MergeStrategy.filterDistinctLines
+      case ("spring.schemas" :: Nil) | ("spring.handlers" :: Nil) =>
+        MergeStrategy.filterDistinctLines
+      case _ => MergeStrategy.first // Changed deduplicate to first
+    }
+  case PathList(_*) => MergeStrategy.first // added this line
+})
+

@@ -30,6 +30,31 @@ This will create an EMR cluster with:
  - automatically attach and mount the EBS
  - automatically unpacks the enron data (if it isn't already unpacked) onto the EBS
 
+### Prepare Data
+
+In addition to unzipping the data we have a spark job that reformats the data into something much more Big Data friendly.  (See "Code Notes" for details).
+
+After you have created a cluster run `./bin/unzipped-to-email-per-row-format.sh`.  This will:
+
+ - Build the code that includes the data preparation
+ - Write back to the EBS for future use
+
+We don't include this step in the Create Cluster Script because its very slow and ought to be run in a screen session for robustness (to allow for network issues).
+
+### Run Analysis
+
+This will use the data from above.
+
+Finally run `./bin/run.sh`
+
+## To Build
+
+Simply `sbt assembly`
+
+## To Run Tests
+
+Simply `sbt test`
+
 # Code Notes
 
 ## Preparing The Data
@@ -37,8 +62,13 @@ This will create an EMR cluster with:
 Note we unzip the data using a bash script (which ought to be rewritten using Scala/Java). 
 More notably we then read all the files, deduplicate and write out into a single directory where each row is a (json escaped) email (partitioned into 1000 files).
 
-Putting the data into this format is extremely useful for further analysis as reading time is greatly decreased. 
-This format is ideal for putting onto HDFS or s3.
+Putting the data into this format is extremely useful for further analysis as reading time is greatly decreased.
+Spark will read continuous blocks from disk significantly faster than 100s of 1000s of small files.
+The time to parse the escaping is completely negligble.
+
+This format is ideal for putting onto HDFS or s3, 1000 partitions is a reasonable number for most clusters.
+
+17/06/18 13:27:16
 
 ## Parsing The Emails
 

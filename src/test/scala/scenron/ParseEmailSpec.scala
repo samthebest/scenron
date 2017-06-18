@@ -27,4 +27,54 @@ object ParseEmailSpec extends Specification {
       ParseEmail.extractEmailList("Cc", withMissingCc) must_=== Nil
     }
   }
+
+  // FIXME We assume no one ever uses the following in the email body. Any inaccuracy this introduces will be minor.
+  // "***********"
+  // "To: "
+  // "---- Forwarded by"
+  "ParseEmail.extractBody" should {
+    "Extract body for standard email" in {
+      ParseEmail.extractBody(withEmptyCc) must_===
+        """Shirley,
+          |
+          |Please, arrange a phone interview with Richard.
+          |Stinson, myself, Vasant.
+          |
+          |Vince""".stripMargin
+    }
+
+    "Extract body for email with forward" in {
+      ParseEmail.extractBody(withForward) must_===
+        """Shirley,
+          |
+          |Please, arrange a phone interview with Big Data!!.
+          |Stinson, myself, Vasant.
+          |
+          |Vince""".stripMargin
+    }
+
+    "Extract body for email with forward short" in {
+      ParseEmail.extractBody(withForwardShort) must_===
+        """Shirley,
+          |
+          |Please, arrange a phone interview with Little Data.
+          |Stinson, myself, Vasant.
+          |
+          |Vince""".stripMargin
+    }
+
+    "Extract body for email with reply" in {
+      ParseEmail.extractBody(withReply) must_===
+        """I'm entirely OK with this....
+          |
+          |Matt""".stripMargin
+    }
+
+    "Extract body for email with awkward reply" in {
+      ParseEmail.extractBody(withAwkwardReply) must_===
+        """I'm entirely not OK with this....
+          |
+          |Matt""".stripMargin
+    }
+  }
 }

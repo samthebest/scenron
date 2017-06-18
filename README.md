@@ -76,6 +76,10 @@ The code that determines the email body, "To" and "Cc" lists parses the .txt ver
 Furthermore the code doesn't even bother using a parser (like Scala Parser Combinators or Parboiled).
 Instead we use some assumption loaded string manipulation hacks.
 
+When I wrote the unit tests I based the tests off only a few sample emails.  This may cause inaccuracies.
+To improve accuracy we ought to trawl through a wide range of emails to ensure we have covered the edge cases.
+Ideally we could track down some documentation for the format.
+
 Nevertheless I believe this approach is OK for an initial spike for the following reasons:
 
 ### YAGNI & KISS

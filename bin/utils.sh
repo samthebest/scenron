@@ -82,3 +82,12 @@ function unzip_data {
 	scp -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem ./bin/unzip-v2-enron.sh hadoop@`master_public_dns`:/home/hadoop/
 	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` "sudo /home/hadoop/unzip-v2-enron.sh"
 }
+
+function grab_sample {
+	scp -r -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`:/enron/flat/edrm-enron-v2_buy-r_xml sample_enron/
+	scp -r -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`:/enron/flat/edrm-enron-v2_dasovich-j_xml sample_enron/
+	scp -r -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`:/enron/flat/eedrm-enron-v2_kaminski-v_xml sample_enron/
+	scp -r -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`:/enron/flat/eedrm-enron-v2_kaminski-v_xml_1of2 sample_enron/
+	scp -r -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`:/enron/flat/eedrm-enron-v2_kaminski-v_xml_2of2 sample_enron/
+}
+

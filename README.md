@@ -72,7 +72,7 @@ Started 17/06/19 07:20:33
 
 ## Calculating The Stats
 
-Observe we use a Monoid so we only need to pass the data once to calculate all the statistics.
+Observe we use a Semigroup so we only need a single read, shuffle & reduce to calculate all the statistics.
 Note I opt for using `RDD` and Functional Programming as it's much easier to test than `Dataset`s, 
 is more stable, often faster (if you know what your doing) and easier to maintain (less layers of indirection). 
 

@@ -36,4 +36,31 @@ object EmailStatsSemigroupSpec extends Specification {
       )
     }
   }
+
+  "EmailStatsSemigroup.topNRecipients" should {
+    "Return the top 2 recipients where CC counts are halved (in descending order)" in {
+      EmailStatsSemigroup.topNRecipients(EmailStatsSemigroup(
+        toCounts = Map("fred" -> 4, "alice" -> 1),
+        ccCounts = Map("bob" -> 6, "george" -> 1, "dave" -> 1, "fred" -> 5),
+        totalBodyWords = 14,
+        numEmails = 4
+      ), 2) must_=== List(
+        "fred" -> 6,
+        "bob" -> 3
+      )
+    }
+
+    "Return the top 3 recipients where CC counts are halved (in descending order)" in {
+      EmailStatsSemigroup.topNRecipients(EmailStatsSemigroup(
+        toCounts = Map("fred" -> 4, "alice" -> 10, "sarah" -> 20),
+        ccCounts = Map("bob" -> 30, "george" -> 1, "dave" -> 1, "fred" -> 5, "alice" -> 3),
+        totalBodyWords = 14,
+        numEmails = 4
+      ), 3) must_=== List(
+        "sarah" -> 20,
+        "bob" -> 15,
+        "alice" -> 11
+      )
+    }
+  }
 }

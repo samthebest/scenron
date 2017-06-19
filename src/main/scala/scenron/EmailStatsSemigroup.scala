@@ -23,4 +23,8 @@ object EmailStatsSemigroup extends Semigroup[EmailStatsSemigroup] {
     totalBodyWords = f1.totalBodyWords + f2.totalBodyWords,
     numEmails = f1.numEmails + f2.numEmails
   )
+
+  def topNRecipients(emailStatsSemigroup: EmailStatsSemigroup, n: Int): List[(String, Long)] =
+    (emailStatsSemigroup.toCounts |+| emailStatsSemigroup.ccCounts.mapValues(_ * 0.5).mapValues(_.toLong))
+    .toList.sortBy(-_._2).take(n)
 }

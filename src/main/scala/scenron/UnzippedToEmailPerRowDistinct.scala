@@ -5,12 +5,11 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
 import spray.json._
 import spray.json.DefaultJsonProtocol._
+import Paths._
 
 object UnzippedToEmailPerRowDistinct {
-  val emailPerRowDir = "file:/enron/email_per_row"
-
   def apply(directory: String, numPartitions: Int = 1000)(implicit sc: SparkContext): RDD[String] =
-    sc.wholeTextFiles(directory + "/edrm-enron-v2*/text*")
+    sc.wholeTextFiles(directory + filePattern)
     .map(_._2).distinct(numPartitions)
     .map(JsString.apply).map(_.toString())
 
@@ -20,11 +19,9 @@ object UnzippedToEmailPerRowDistinct {
   def parse(line: String): String = line.parseJson.convertTo[String].replaceAllLiterally("\r\n", "\n")
 }
 
-import UnzippedToEmailPerRowDistinct._
-
 object UnzippedToEmailPerRowDistinctApp {
   def main(args: Array[String]): Unit = {
     implicit val sc = new SparkContext(new SparkConf().setAppName("Scenron"))
-    UnzippedToEmailPerRowDistinct("file:/enron/flat").saveAsTextFile(emailPerRowDir, classOf[GzipCodec])
+    UnzippedToEmailPerRowDistinct("file:" + unzipped).saveAsTextFile(emailPerRowDir, classOf[GzipCodec])
   }
 }

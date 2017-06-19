@@ -15,7 +15,9 @@ object UnzippedToEmailPerRowDistinct {
     .map(JsString.apply).map(_.toString())
 
   def read(directory: String = emailPerRowDir)(implicit sc: SparkContext): RDD[String] =
-    sc.textFile(directory).map(_.parseJson.convertTo[String].replaceAllLiterally("\r\n", "\n"))
+    sc.textFile(directory).map(parse)
+
+  def parse(line: String): String = line.parseJson.convertTo[String].replaceAllLiterally("\r\n", "\n")
 }
 
 import UnzippedToEmailPerRowDistinct._

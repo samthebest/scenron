@@ -15,7 +15,6 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-mllib" % "2.1.1" withSources() withJavadoc(),
   //
   "org.scalaz" %% "scalaz-core" % "7.1.0" withSources() withJavadoc(),
-  "org.apache.commons" % "commons-math3" % "3.2" withSources() withJavadoc(),
   "io.spray" %% "spray-json" % "1.3.1" withSources() withJavadoc()
 )
 

@@ -18,6 +18,6 @@ object ParseEmail {
   def apply(email: String): Email = Email(
     to = extractEmailList("To", email),
     cc = extractEmailList("Cc", email),
-    extractBody(email)
+    body = extractBody(email)
   )
 }

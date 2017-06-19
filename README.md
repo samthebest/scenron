@@ -39,11 +39,11 @@ After you have created a cluster run `./bin/unzipped-to-email-per-row-format.sh`
  - Build the code that includes the data preparation
  - Write back to the EBS for future use
 
-We don't include this step in the Create Cluster Script because its very slow and ought to be run in a screen session for robustness (to allow for network issues).
+We don't include this step in the Create Cluster Script because its very slow and TODO ought to be run in a screen session for robustness.
 
 ### Run Analysis
 
-This will use the data from above.
+This will use the data, cluster (and jar) from above.
 
 Finally run `./bin/run.sh`
 
@@ -109,8 +109,8 @@ I did not have time to analyse the format of PST or EML, perhaps these formats l
 
 # Solution
 
-Best efforts have been made to ensure a correct solution, nevertheless I believe the process is more important here especially when this kind of analysis is done in isolation.
-Due to the unusual data formats, time constraints and data preparation required, I don't have vast confidence in the numbers.
+Best efforts have been made to ensure a correct solution, nevertheless I believe transparency of the process is more important here especially when this kind of analysis is done in isolation without peer review.
+Due to the unusual data formats, time constraints and data preparation required, I don't have 100% confidence in the numbers.
 Peer review would be essential to ensure correctness.
 In fact for an initial spike like this it could make sense to require independent reproduction by another team/team-member as per the scientific method.
 Finally, of course iterations with stakeholders and data producers would also be required to ensure correctness.

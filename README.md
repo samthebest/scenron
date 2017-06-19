@@ -68,7 +68,13 @@ The time to parse the escaping is completely negligble.
 
 This format is ideal for putting onto HDFS or s3, 1000 partitions is a reasonable number for most clusters.
 
-17/06/18 13:27:16
+Started 17/06/19 07:20:33
+
+## Calculating The Stats
+
+Observe we use a Monoid so we only need to pass the data once to calculate all the statistics.
+Note I opt for using `RDD` and Functional Programming as it's much easier to test than `Dataset`s, 
+is more stable, often faster (if you know what your doing) and easier to maintain (less layers of indirection). 
 
 ## Parsing The Emails
 

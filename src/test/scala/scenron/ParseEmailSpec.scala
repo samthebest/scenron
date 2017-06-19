@@ -4,6 +4,13 @@ import org.specs2.mutable.Specification
 import SampleEmails._
 
 object ParseEmailSpec extends Specification {
+  val expectedCcWithReply = List("Karen Tamlyn", "Dale Surbey", "Steven Leppard",
+    "Melanie Doyle", "Tani Nath", "Vince J Kaminski", "Lucy Page")
+  val expectedBodyWithReply =
+    """I'm entirely OK with this....
+      |
+      |Matt""".stripMargin
+
   "ParseEmail.extractEmailList" should {
     "Extract empty \"Cc\" correctly" in {
       ParseEmail.extractEmailList("Cc", withEmptyCc) must_=== Nil
@@ -14,8 +21,7 @@ object ParseEmailSpec extends Specification {
     }
 
     "Extract two line \"Cc\" correctly" in {
-      ParseEmail.extractEmailList("Cc", withReply) must_=== List("Karen Tamlyn", "Dale Surbey", "Steven Leppard",
-        "Melanie Doyle", "Tani Nath", "Vince J Kaminski", "Lucy Page")
+      ParseEmail.extractEmailList("Cc", withReply) must_=== expectedCcWithReply
     }
 
     "Extract three line \"To\" correctly" in {
@@ -64,10 +70,7 @@ object ParseEmailSpec extends Specification {
     }
 
     "Extract body for email with reply" in {
-      ParseEmail.extractBody(withReply) must_===
-        """I'm entirely OK with this....
-          |
-          |Matt""".stripMargin
+      ParseEmail.extractBody(withReply) must_=== expectedBodyWithReply
     }
 
     "Extract body for email with awkward reply" in {
@@ -75,6 +78,16 @@ object ParseEmailSpec extends Specification {
         """I'm entirely not OK with this....
           |
           |Matt""".stripMargin
+    }
+  }
+
+  "ParseEmail.apply" should {
+    "Return an Email case class with the correct values" in {
+      ParseEmail.apply(withReply) must_=== Email(
+        to = List("Sophie Kingsley"),
+        cc = expectedCcWithReply,
+        body = expectedBodyWithReply
+      )
     }
   }
 }

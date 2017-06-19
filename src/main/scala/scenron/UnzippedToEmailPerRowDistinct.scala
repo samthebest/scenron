@@ -13,8 +13,8 @@ object UnzippedToEmailPerRowDistinct {
     .map(_._2).distinct(numPartitions)
     .map(JsString.apply).map(_.toString())
 
-  def read(directory: String = emailPerRowDir)(implicit sc: SparkContext): RDD[String] =
-    sc.textFile(directory).map(parse)
+  def read(directory: String = hdfsEmailPerRowDir)(implicit sc: SparkContext): RDD[String] =
+    sc.textFile("hdfs:" + directory).map(parse)
 
   def parse(line: String): String = line.parseJson.convertTo[String].replaceAllLiterally("\r\n", "\n")
 }

@@ -26,10 +26,4 @@ object UnzippedToEmailPerRowDistinctSpec extends Specification {
       rdd.getNumPartitions must_=== 10
     }
   }
-
-  "UnzippedToEmailPerRowDistinct.read" should {
-    "Read sampleEmailPerRow correctly" in {
-      UnzippedToEmailPerRowDistinct.read(sampleEmailPerRow).collect().toList must_=== List(headClean, dummyClean)
-    }
-  }
 }

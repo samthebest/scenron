@@ -93,16 +93,34 @@ function scp_jar {
 	scp -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem target/scala-2.11/scenron-assembly-1.jar hadoop@`master_public_dns`:/home/hadoop/scenron.jar
 }
 
-function unzipped_to_email_per_row_format {
+function unzipped_to_email_per_row_format_deprecated {
 	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` "sudo rm -r /enron/email_per_row"
 	# We have to use Local mode as the files are local. If Master is a fat node we can still get some good parallelism.
 	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` \
 	  "sudo spark-submit --class scenron.UnzippedToEmailPerRowDistinctApp --master local[6] --driver-memory 8g /home/hadoop/scenron.jar"
 }
 
-function email_stats {
+function unzipped_to_email_per_row_format {
+	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` "sudo rm -r /enron/email_per_row || true"
+	# We have to use Local mode as the files are local. If Master is a fat node we can still get some good parallelism.
 	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` \
-	  "sudo spark-submit --class scenron.EmailStatsApp --master yarn --deploy-mode client --driver-memory 8g --executor-memory 8g /home/hadoop/scenron.jar"
+	  "sudo spark-submit --class scenron.UnzippedToEmailPerRowDistinctAltApp --master local[6] --driver-memory 8g /home/hadoop/scenron.jar"
 }
 
+function email_stats {
+	echo "INFO: Copying data to HDFS"
+	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` "hdfs dfs -copyFromLocal /enron/email_per_row /tmp/" || true
 
+	ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` \
+	  "sudo spark-submit --class scenron.EmailStatsApp --master yarn --deploy-mode client --driver-memory 8g --executor-memory 8g --total-executor-cores 8 /home/hadoop/scenron.jar"
+	#ssh -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns` \
+	#  "sudo spark-submit --class scenron.EmailStatsApp --master local[6] --driver-memory 8g /home/hadoop/scenron.jar"
+}
+
+function backup_email_per_row_non_distinct {
+	scp -r -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`:/enron/email_per_row_non_distinct ./
+}
+
+function backup_email_per_row {
+	scp -r -o StrictHostKeyChecking=no -i ~/.ssh/${key_pair}.pem hadoop@`master_public_dns`:/enron/email_per_row ./
+}

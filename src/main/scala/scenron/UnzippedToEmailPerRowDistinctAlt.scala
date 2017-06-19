@@ -11,9 +11,11 @@ import spray.json.JsString
 import scala.io.Source
 
 object UnzippedToEmailPerRowDistinctAlt {
-  def apply(directory: String, numPartitions: Int = 1000, tmpDir: String = "/enron/email_per_row_non_distinct")
+  def apply(inzippedDirectory: String, numPartitions: Int = 1000, tmpDir: String = "/enron/email_per_row_non_distinct")
            (implicit sc: SparkContext): RDD[String] = {
-    val inputDir = new File(directory)
+    val inputDir = new File(inzippedDirectory)
+
+    require(inputDir.exists() && inputDir.isDirectory, "Input directory not exist: " + inzippedDirectory)
 
     val tmpDirFile = new File(tmpDir)
 
@@ -22,7 +24,7 @@ object UnzippedToEmailPerRowDistinctAlt {
     else {
       tmpDirFile.mkdir()
 
-      inputDir.listFiles().foreach(userDir => {
+      inputDir.listFiles().filter(d => d.getName != "files_done" && d.getName != "corrupt_zip_files").foreach(userDir => {
         println("INFO: Processing: " + userDir.getName)
         val pw = new PrintWriter(new File(tmpDir + "/" + userDir.getName))
         try
@@ -37,13 +39,13 @@ object UnzippedToEmailPerRowDistinctAlt {
     }
 
     println("INFO: Distincting")
-    sc.textFile(tmpDir).distinct(numPartitions)
+    sc.textFile("file:" + tmpDir).distinct(numPartitions)
   }
 }
 
 object UnzippedToEmailPerRowDistinctAltApp {
   def main(args: Array[String]): Unit = {
     implicit val sc = new SparkContext(new SparkConf().setAppName("Scenron"))
-    UnzippedToEmailPerRowDistinctAlt("file:" + unzipped).saveAsTextFile(emailPerRowDirAlt, classOf[GzipCodec])
+    UnzippedToEmailPerRowDistinctAlt(unzipped).saveAsTextFile(emailPerRowDir, classOf[GzipCodec])
   }
 }

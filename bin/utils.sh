@@ -64,7 +64,7 @@ function master_security_group_id {
 
 function allow_inbound_ssh_this_ip {
 	ip=`curl ipecho.net/plain ; echo`
-	aws ec2 authorize-security-group-ingress --group-name ElasticMapReduce-master --protocol tcp --port 22 --cidr ${ip}/24
+	aws ec2 authorize-security-group-ingress --group-name ElasticMapReduce-master --protocol tcp --port 22 --cidr ${ip}/32
 }
 
 function ssh_to_master {
